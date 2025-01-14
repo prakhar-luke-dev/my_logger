@@ -2,9 +2,13 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 
 
-def setup_logger(log_file="logs/chatlog", log_handler='my_logger', backup=15, rotate='midnight'):
+def setup_logger(log_file="logs/chatlog", log_handler='my_logger', 
+                 backup=15, rotate='midnight',
+                 log_format="%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s",
+                 date_format="%Y-%m-%d %H:%M:%S",
+                 _utc=False):
     """
-    Setup logger
+    Setup logger with optional formatting.
     Args:
         log_file (str) : Path to log file
         log_handler (str) : handler name
@@ -12,6 +16,9 @@ def setup_logger(log_file="logs/chatlog", log_handler='my_logger', backup=15, ro
         rotate (str[S,M,H,D,'midnight',W{0-6}]) : what time new file will be created \
                             (S - Seconds, M - Minutes, H - Hours, D - Days, midnight, \
                             W{0-6} - roll over on a certain day; 0 - Monday)
+        log_format (str): Format for log messages.
+        date_format (str): Format for the date in log messages.
+        _utc (bool): Determines whether the timestamps for log rotation are based on UTC 
 
     Return:
         logger (object) : logger object with args property
@@ -21,10 +28,11 @@ def setup_logger(log_file="logs/chatlog", log_handler='my_logger', backup=15, ro
     if not logger.handlers:
         logger.setLevel(logging.DEBUG)
 
-        handler = TimedRotatingFileHandler(log_file, when=rotate, interval=1, backupCount=backup, utc=False)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+        handler = TimedRotatingFileHandler(log_file, when=rotate, interval=1, backupCount=backup, utc=_utc)
+        formatter = logging.Formatter(log_format, datefmt=date_format)
         handler.setFormatter(formatter)
 
         logger.addHandler(handler)
+
 
     return logger
