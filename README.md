@@ -1,6 +1,10 @@
 # luke_logger
 
 ## how to use :
+```bash
+pip install luke-logger
+```
+
 ```python
 from logs_operations.logger_setup import setup_logger
 
